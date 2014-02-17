@@ -21,7 +21,7 @@ public class ActionHandler {
 	private Communication communication;
 
 	private ActionHandler() {
-		
+
 	}
 
 	/**
@@ -45,11 +45,11 @@ public class ActionHandler {
 	public void setUserHandler(UserHandler userHandler) {
 		this.userHandler = userHandler;
 	}
-	
+
 	/**
 	 * @param communication
 	 */
-	public void setCommunication(Communication communication){
+	public void setCommunication(Communication communication) {
 		this.communication = communication;
 	}
 

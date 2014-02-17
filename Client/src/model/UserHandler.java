@@ -5,7 +5,7 @@
  * @version 2013-02-06
  */
 /*
- Sparar användarsession
+ Sparar anvï¿½ndarsession
  */
 
 package model;
@@ -23,8 +23,8 @@ public class UserHandler implements Serializable {
 	public void setUser(String user) {
 		this.user = user;
 	}
-	
-	public void setPassword(String password){
+
+	public void setPassword(String password) {
 		this.password = password;
 	}
 

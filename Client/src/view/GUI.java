@@ -39,22 +39,26 @@ public abstract class GUI {
 	/**
 	 * Create all labels
 	 */
-	protected void initLabels() {}
+	protected void initLabels() {
+	}
 
 	/**
 	 * Create all buttons
 	 */
-	protected void initButtons() {}
+	protected void initButtons() {
+	}
 
 	/**
 	 * Create all panels
 	 */
-	protected void initPanels() {}
+	protected void initPanels() {
+	}
 
 	/**
 	 * Create all text fields.
 	 */
-	protected void initTextFields() {}
+	protected void initTextFields() {
+	}
 
 	/**
 	 * Place all components

@@ -25,6 +25,8 @@ public abstract class UserGUI extends GUI {
 		super.initButtons();
 		// Init logout
 		components.put("logOut", new JButton("Log Out"));
+		// Knapp för att veckal ut schemat till 24h view, som även tar tillbaka
+		// till normal view
 	}
 
 	/**
@@ -45,10 +47,10 @@ public abstract class UserGUI extends GUI {
 	@Override
 	protected void buildGUI() {
 		super.buildGUI();
-		
+
 		// topPanel
 		getCanvas().add(components.get("topPanel"), BorderLayout.NORTH);
-		
+
 		// menuPanel
 		getCanvas().add(components.get("topPanel"), BorderLayout.WEST);
 	}

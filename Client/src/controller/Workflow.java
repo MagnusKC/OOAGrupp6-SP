@@ -15,13 +15,13 @@ public class Workflow {
 	private UserHandler userHandler;
 	private Communication communication;
 	private Window window;
-	
-	public Workflow(){
+
+	public Workflow() {
 		window = new Window();
 		window.setView("Login");
 		userHandler = new UserHandler();
 		communication = new Communication();
-		
+
 		ActionHandler.getInstance().setUserHandler(userHandler);
 		ActionHandler.getInstance().setCommunication(communication);
 	}

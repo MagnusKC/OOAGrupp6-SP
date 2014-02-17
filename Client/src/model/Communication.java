@@ -53,8 +53,8 @@ public class Communication {
 		}
 
 		Boolean result = false;
-		String logIn = user.getUser()+ " " + user.getPassword();
-		
+		String logIn = user.getUser() + " " + user.getPassword();
+
 		try {
 			outStream.writeObject(logIn);
 			try {

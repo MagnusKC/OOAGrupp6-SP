@@ -1,3 +1,7 @@
+import java.io.IOException;
+
+import view.JSchedule;
+import model.Schedule;
 import controller.Workflow;
 
 /**
@@ -11,8 +15,9 @@ public class Main {
 
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		new Workflow();
 	}
 

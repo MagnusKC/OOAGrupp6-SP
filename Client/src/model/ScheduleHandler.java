@@ -5,10 +5,12 @@
  * @version 2013-02-06
  */
 
+
 package model;
 
 public class ScheduleHandler {
-
+	
+	/*
 	getWeek(int personnr) {
 
 	}
@@ -36,5 +38,6 @@ public class ScheduleHandler {
 	modifySchedule([]) {
 	
 	}
-
+	*/
 }
+
