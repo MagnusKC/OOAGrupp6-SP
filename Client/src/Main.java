@@ -18,6 +18,7 @@ public class Main {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
+		Schedule sch = new Schedule();
 		new Workflow();
 	}
 

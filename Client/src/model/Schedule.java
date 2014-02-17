@@ -19,30 +19,27 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 public class Schedule {
-	//private Week selectedWeek;
-	private File scheduleFile;
-	private String line;
-	private Calendar calendar = new GregorianCalendar();
-	private String[] weekLines;
-	private int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
-	private int currentDay = calendar.get(Calendar.DAY_OF_WEEK); //Sunday 1, Monday 2, ... , Saturday 7
+	private String line /*, scheduleString*/;
+	private Calendar calendar;
+	private int currentWeek;
+	private int currentDay; //Sunday 1, Monday 2, ... , Saturday 7
 	private BufferedReader reader;
-	private Boolean isCheckedIn;
-	private HashMap<String, Day> weekMap = new HashMap<String, Day>();
-	private String[] temp = new String[20];
+	//private Boolean isCheckedIn;
+	private HashMap<String, Day> weekMap;
+	private String[] temp;
 	
-	// lokal textfil för,
-
-	
-	//Should have the txtfile for 1 persons entire schedule
-	public Schedule(/* txtFile from comm. File scheduleFile */) throws IOException {
+	/**
+	 * @throws IOException
+	 */
+	public Schedule(/* string from comm. File scheduleString */) throws IOException {
 		
-		//this.scheduleFile = scheduleFile;
+		calendar = new GregorianCalendar();
+		currentWeek  = calendar.get(Calendar.WEEK_OF_YEAR);
+		currentDay = calendar.get(Calendar.DAY_OF_WEEK);
+		weekMap = new HashMap<String, Day>();
 		
-		//System.out.println(currentDay);
+		System.out.println("Week:" + currentWeek + " Day:" + currentDay);
 		
-		
-				
 		try  { 
 			reader = new BufferedReader(new FileReader(
 					"/home/magnusk/workspace/Projekt-SP/OOAGrupp6-SP/schema1.txt"));
@@ -54,12 +51,14 @@ public class Schedule {
 		catch (Exception e2) {
 			e2.printStackTrace();
 		}
-		
-		System.out.println(getWeekMap(1).get("mon").getEndTimeH());
-
 	}
 
 	//Will return a Week object of the chosen week of the year
+	/**
+	 * @param chosenWeek
+	 * @return Returns a HashMap containing a Day object for every day of the chosen week. The keys are the first 3 letters of the week day.
+	 * @throws IOException
+	 */
 	public HashMap<String, Day> getWeekMap(int chosenWeek) throws IOException {
 		int i = 0;
 		Boolean rightWeek = false;
@@ -84,9 +83,6 @@ public class Schedule {
 		return week;
 	}
 */
-	int getPrevWeek() {
-		return 0;
-	}
 
 	void checkin() {
 		
