@@ -79,6 +79,10 @@ public class Day {
 
 	}
 
+	/**
+	 * @param hour The hour of which you pressed checkOut
+	 * @param minute The minute of which you pressed checkOut
+	 */
 	public void addCheckOut(int hour, int minute) {
 		if(checkedIn){
 			checkedIn = false;

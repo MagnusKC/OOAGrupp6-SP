@@ -34,7 +34,7 @@ public class Schedule {
 	public Schedule(/* string from comm. File scheduleString */) throws IOException {
 		
 		calendar = new GregorianCalendar();
-		currentWeek  = calendar.get(Calendar.WEEK_OF_YEAR);
+		currentWeek  = calendar.get(Calendar.WEEK_OF_YEAR); //Since "DAY_OF_WEEK" makes Sunday day 1, I'm wondering how it handles weeks. Does a new week happen on a sunday?
 		currentDay = calendar.get(Calendar.DAY_OF_WEEK);
 		weekMap = new HashMap<String, Day>();
 		
@@ -55,7 +55,7 @@ public class Schedule {
 
 	//Will return a Week object of the chosen week of the year
 	/**
-	 * @param chosenWeek
+	 * @param chosenWeek The number of the week you'd like to get. (1-52)
 	 * @return Returns a HashMap containing a Day object for every day of the chosen week. The keys are the first 3 letters of the week day.
 	 * @throws IOException
 	 */

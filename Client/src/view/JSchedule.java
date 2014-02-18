@@ -22,7 +22,6 @@ public class JSchedule implements Observer {
 
 	public JSchedule(Schedule schedule) throws IOException {
 		this.schedule = schedule;
-		System.out.println(schedule.getWeekMap(1).get("mon").getStartTimeH());
 		//initPanels();
 	}
 
