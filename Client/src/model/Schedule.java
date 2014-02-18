@@ -18,28 +18,32 @@ import java.util.GregorianCalendar;
 
 public class Schedule {
 	private String line/*, scheduleString*/;
-	private Calendar calendar;
+	private Calendar cal;
 	private int currentWeek;
 	private int currentDay; //Sunday 1, Monday 2, ... , Saturday 7
 	private BufferedReader reader;
+	private Boolean isCheckedIn;
 	//private Boolean isCheckedIn;
 	//private HashMap<String, Day> weekMap; //HashMap
 	//private String[] temp; //temporary string array
 	private Day[] weekArray; //Sunday 1, Monday 2, ... , Saturday 7
+	private int[] checkInsOuts;
 	
 	/**
 	 * @throws IOException
 	 */
 	public Schedule(/* object from comm. Obj scheduleStringObj */) throws IOException {
 		
-		calendar = new GregorianCalendar();
-		calendar.setFirstDayOfWeek(Calendar.MONDAY); // Works as intended ! MONDAY (2) is now the first day of the week and affects WEEK_OF_YEAR
-		currentWeek  = calendar.get(Calendar.WEEK_OF_YEAR); //Since "DAY_OF_WEEK" makes Sunday day 1, I'm wondering how it handles weeks. Does a new week happen on a sunday?
-		currentDay = calendar.get(Calendar.DAY_OF_WEEK);
+		cal = new GregorianCalendar();
+		cal.setFirstDayOfWeek(Calendar.MONDAY); // Works as intended ! MONDAY (2) is now the first day of the week and affects WEEK_OF_YEAR
+		currentWeek  = cal.get(Calendar.WEEK_OF_YEAR); //Since "DAY_OF_WEEK" makes Sunday day 1, I'm wondering how it handles weeks. Does a new week happen on a sunday?
+		currentDay = cal.get(Calendar.DAY_OF_WEEK);
+		isCheckedIn = false;
+		weekArray = getWeekArray(currentWeek);
 		//weekMap = new HashMap<String, Day>();
 		
 		
-		System.out.println("Week:" + currentWeek + " Day:" + currentDay + " Hour:" + calendar.get(Calendar.HOUR) + " Minute:" + calendar.get(Calendar.MINUTE) + " Seconds:" + calendar.get(Calendar.SECOND));
+		System.out.println("Week:" + currentWeek + " Day:" + currentDay + " Hour:" + cal.get(Calendar.HOUR_OF_DAY) + " Minute:" + cal.get(Calendar.MINUTE) + " Seconds:" + cal.get(Calendar.SECOND));
 		
 		
 		try  { 
@@ -64,7 +68,7 @@ public class Schedule {
 	 * @throws IOException
 	 */
 	/*
-	//Gör om till en Day array för calendar [1-7] ?
+	//Gör om till en Day array för cal [1-7] ?
 	public HashMap<String, Day> getWeekMap(int chosenWeek) throws IOException {
 		int i = 1;
 		Boolean rightWeek = false;
@@ -111,31 +115,52 @@ public class Schedule {
 	}
 	
 	/**
-	 * @param chosenDay 1-7 Sunday - Saturday
-	 * @return selected day
-	 * @throws IOException 
+	 * Adds the time of the checkin to the correct string
 	 */
-	public Day getDay(int chosenDay) throws IOException{
-		
-		Day[] days = getWeekArray(currentWeek);
-		
-		return days[chosenDay];
+	//Kopplas till actionhandler?
+	public void checkIn() {
+		if(!isCheckedIn){
+			isCheckedIn = true;
+			weekArray[currentDay].wholeDay += ("|"+cal.get(Calendar.HOUR_OF_DAY)+"."+cal.get(Calendar.MINUTE));
+		}
+		//else if(weekArray[currentDay-1]){} Behöver fixa så det fungerar om någon är instämplad över natten.
+
 	}
+	/**
+	 * Adds the time of the checkout to the correct string
+	 */
+	public void checkOut() {
+		if(isCheckedIn){
+			isCheckedIn = false;
+			weekArray[currentDay].wholeDay += ("|"+cal.get(Calendar.HOUR_OF_DAY)+"."+cal.get(Calendar.MINUTE));
+		}
+	}
+	/**
+	 * @param chosenDay
+	 * @return An int array with the times of check ins(1) and check outs(2), with the check in first and check out second. [1,2,1,2,1,2...]
+	 * Is not yett made for over night check ins
+	 */
+	public int[] getCheckInsOuts(int chosenDay){
+		
+		//checkInsOuts = weekArray[chosenDay].in;
+		return checkInsOuts;
+	}
+	
 /*
 	Week getNextWeek() {
 		return week;
 	}
 */
 
-	//Skall kunna köras utan inparameter med hjälp av calendar get current day och tid
+	//Skall kunna köras utan inparameter med hjälp av cal get current day och tid
 	void checkin() {
-		//calendar.get(Calendar.HOUR);
-		//calendar.get(Calendar.MINUTE);
+		//cal.get(Calendar.HOUR);
+		//cal.get(Calendar.MINUTE);
 		
 		
 	}
 
-	//Skall kunna köras utan inparameter med hjälp av calendar get current day och tid
+	//Skall kunna köras utan inparameter med hjälp av cal get current day och tid
 	void checkout() {
 
 	}

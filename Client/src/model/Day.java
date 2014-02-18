@@ -19,11 +19,15 @@
 
 package model;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class Day {
-	Boolean checkedIn;
+	Calendar cal = new GregorianCalendar();
+	//Boolean checkedIn;
 	int startTimeH, startTimeM, endTimeH, endTimeM;
-	String[] temp, in, checkIns, checkOuts;
-	String wholeDay;
+	public String[] temp, in, checkIns, checkOuts;
+	public String wholeDay;
 
 	// Every day gets their line of information
 	/**
@@ -32,7 +36,7 @@ public class Day {
 	public Day(String dayText) {
 		wholeDay = dayText;
 		in = dayText.split("\\|");
-		checkedIn = false;
+		//checkedIn = false;
 	}
 
 	/**
@@ -67,30 +71,7 @@ public class Day {
 		return endTimeM = Integer.parseInt(temp[1]);
 	}
 
-	/**
-	 * @param hour The hour of which you pressed checkIn
-	 * @param minute The minute of which you pressed checkIn
-	 */
-	public void addCheckIn(int hour, int minute) {
-		if(!checkedIn){
-			checkedIn = true;
-			//skriver tiden till schematexten
-		}
-
-	}
-
-	/**
-	 * @param hour The hour of which you pressed checkOut
-	 * @param minute The minute of which you pressed checkOut
-	 */
-	public void addCheckOut(int hour, int minute) {
-		if(checkedIn){
-			checkedIn = false;
-			//ska skriver tiden till schematexten
-		}
-	}
-
-	//Ändra till tiderna efter starttid|stoptid, 
+	//Ändra till tiderna efter starttid|stoptid. Onödiga metoder?
 	public String[] getCheckIns() {
 		return checkIns;
 	}
