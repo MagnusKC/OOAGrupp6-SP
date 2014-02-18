@@ -86,7 +86,7 @@ public class Day {
 	public void addCheckOut(int hour, int minute) {
 		if(checkedIn){
 			checkedIn = false;
-			//skriver tiden till schematexten
+			//ska skriver tiden till schematexten
 		}
 	}
 
