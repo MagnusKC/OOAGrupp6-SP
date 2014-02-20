@@ -1,8 +1,10 @@
 /**
- * Write a description of class Communication here.
+ * Set up a connection to the server with IP and port number from a config file. 
+ * Responsible for sending log in request from a user and receiving if it worked.
+ * Also takes care of receiving the user's schedule and sending modified user schedules back to the server.
  * 
  * @author Erik Hermansson
- * @version 2013-02-10
+ * @version 2013-02-18
  */
 
 package model;
@@ -12,66 +14,89 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
+import java.util.Observable;
 
-public class Communication {
+public class Communication extends Observable {
 
 	private Socket socket;
-	private static ObjectInputStream inStream;
-	private static ObjectOutputStream outStream;
+	private ObjectInputStream in;
+	private ObjectOutputStream out;
+	private String ip;
+	private int portNumber;
 
+	/**
+	 * Init port number and IP that the client needs to create a socket against.
+	 */
 	public Communication() {
-		connect();
+		// TODO Read these two variables from a text file instead of hard coded
+		// like this
+		ip = "localhost";
+		portNumber = 4444;
 	}
 
+	/**
+	 * Set up a new socket and connect to the given ip and port number.
+	 */
 	private void connect() {
 		try {
-			InetAddress inet = InetAddress.getByName("127.0.0.1");
-			socket = new Socket(inet, 4444);
+			socket = new Socket(InetAddress.getByName(ip), portNumber);
+			socket.setSoTimeout(10000);
+			
+			out = new ObjectOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
 		}
+	}
+	
+	/**
+	 * Close down the socket.
+	 */
+	public void disconnect(){
 		try {
-			outStream = new ObjectOutputStream(socket.getOutputStream());
-			inStream = new ObjectInputStream(socket.getInputStream());
+			// Possible null pointers can happen if these are not checked
+			if(out != null && !socket.isOutputShutdown()){
+				out.close();
+			}
+			if(in != null && !socket.isInputShutdown()){
+				in.close();
+			}
+			if(socket != null && !socket.isClosed()){
+				socket.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
+
 		}
 	}
 
-	public void requestLogin(UserHandler user) throws IllegalArgumentException {
-		if (user == null) {
-			throw new IllegalArgumentException("UserHandler not found");
+	/**
+	 * @param username
+	 *            ID to be sent to server.
+	 * @param password
+	 *            Password to be sent to server.
+	 */
+	public void requestLogin(String username, String password) {
+		if (username == null) {
+			username = "";
 		}
-		if (user.getUser() == null) {
-			user.setUser("");
+		if (password == null) {
+			password = "";
 		}
-		if (user.getPassword() == null) {
-			user.setPassword("");
-		}
+		connect();
 
-		Boolean result = false;
-		String logIn = user.getUser() + " " + user.getPassword();
-
+		String result = "false";
+		String s = "login " + username + " " + password;
 		try {
-			outStream.writeObject(logIn);
-			try {
-				result = (Boolean) inStream.readObject();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		} catch (SocketException e) {
-			System.out.println(e.toString());
-		} catch (IOException e) {
+			out.writeObject(s);
+			out.flush();
+			// getInputStream is blocking, initiate just before first receive
+			in = new ObjectInputStream(socket.getInputStream());
+			result = (String) in.readObject();
+			// IOException & ClassNotFoundException
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		if (result == true) {
-			System.out.println("Logged in!");
-		} else {
-			System.out.println("Bad username or password");
-		}
+		setChanged();
+		notifyObservers(result);
 	}
 }

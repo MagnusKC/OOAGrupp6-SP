@@ -19,15 +19,17 @@
 
 package model;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class Day {
 	Calendar cal = new GregorianCalendar();
-	//Boolean checkedIn;
+	Boolean isCheckedIn;
 	int startTimeH, startTimeM, endTimeH, endTimeM;
 	public String[] temp, in, checkIns, checkOuts;
 	public String wholeDay;
+	public int[] checkInsOuts;
 
 	// Every day gets their line of information
 	/**
@@ -36,7 +38,7 @@ public class Day {
 	public Day(String dayText) {
 		wholeDay = dayText;
 		in = dayText.split("\\|");
-		//checkedIn = false;
+		isCheckedIn = false;
 	}
 
 	/**
@@ -71,8 +73,16 @@ public class Day {
 		return endTimeM = Integer.parseInt(temp[1]);
 	}
 
+	public int[] getCheckInsOuts(){
+		temp = Arrays.copyOfRange(in, 2, in.length);
+		checkInsOuts = new int[temp.length];
+		
+		//checkInsOuts = weekArray[chosenDay].in;
+		return checkInsOuts;
+	}
 	//Ändra till tiderna efter starttid|stoptid. Onödiga metoder?
 	public String[] getCheckIns() {
+		
 		return checkIns;
 	}
 

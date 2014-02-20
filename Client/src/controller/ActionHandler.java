@@ -2,7 +2,7 @@
  * Takes care of all events that can be triggered by swing components.
  * 
  * @author David Stromner
- * @version 2013-02-12
+ * @version 2013-02-16
  */
 
 package controller;
@@ -11,17 +11,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import model.Communication;
-import model.UserHandler;
-
 public class ActionHandler {
 	private static ActionHandler actionHandler = null;
 	private String username, password;
-	private UserHandler userHandler;
-	private Communication communication;
+	private Workflow workflow;
 
 	private ActionHandler() {
-
+		username = "";
+		password = "";
 	}
 
 	/**
@@ -38,19 +35,10 @@ public class ActionHandler {
 	}
 
 	/**
-	 * Set the class instance
-	 * 
-	 * @param userHandler
-	 */
-	public void setUserHandler(UserHandler userHandler) {
-		this.userHandler = userHandler;
-	}
-
-	/**
 	 * @param communication
 	 */
-	public void setCommunication(Communication communication) {
-		this.communication = communication;
+	public void setWorkflow(Workflow workflow) {
+		this.workflow = workflow;
 	}
 
 	/**
@@ -89,13 +77,39 @@ public class ActionHandler {
 
 		return s;
 	}
+	
+	/**
+	 * Open popup that retrieves config info and display it in two edible text fields
+	 */
+	public void networkConfig(){
+		System.out.println("There's suppose to be a window here, sadly it's taking a break for the time being");
+	}
 
 	/**
-	 * Retrieves login information and sends it to the server.
+	 * Retrieves user information and sends it to the workflow.
 	 */
 	public void logIn() {
-		userHandler.setUser(username);
-		userHandler.setPassword(password);
-		communication.requestLogin(userHandler);
+		workflow.connectToServer(username, password);
+	}
+	
+	/**
+	 * Retrieves user information and sends it to the workflow.
+	 */
+	public void logOut() {
+		workflow.disconnectFromServer();
+	}
+	
+	/**
+	 * Message the server that the user started working.
+	 */
+	public void checkIn(){
+		
+	}
+	
+	/**
+	 * Message the server that the user stopped working.
+	 */
+	public void checkOut(){
+		
 	}
 }

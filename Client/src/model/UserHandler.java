@@ -1,11 +1,6 @@
 /**
- * 
- * 
- * @author David Stromner
+ * @author
  * @version 2013-02-06
- */
-/*
- Sparar anv�ndarsession
  */
 
 package model;
@@ -14,22 +9,32 @@ import java.io.Serializable;
 
 public class UserHandler implements Serializable {
 	private static final long serialVersionUID = -1570700443561640144L;
-	private String user;
+	private String username;
 	private String password;
+	private static UserHandler userHandler;
 
-	public UserHandler() {
+	private UserHandler() {
+
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public static UserHandler getInstance() {
+		if (userHandler == null) {
+			userHandler = new UserHandler();
+		}
+
+		return userHandler;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public String getUser() {
-		return user;
+	public String getUsername() {
+		return username;
 	}
 
 	public String getPassword() {

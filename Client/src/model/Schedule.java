@@ -99,14 +99,13 @@ public class Schedule {
 		int i = 1;
 		Boolean rightWeek = false;
 		
-		//Not sure if the reader actually reads the file here or if this section of code just compiles
 		while ((line = reader.readLine()) != null && i<7) {
 			//System.out.println(line);
 			if (line.length() == 1 && Integer.parseInt(line) == chosenWeek) {
 				rightWeek = true;
 				line = reader.readLine(); //Ugly solution
 			}
-			if(rightWeek){
+			else if(rightWeek){
 				weekArray[i+1] = new Day(line);
 				i++;
 			}
@@ -118,8 +117,9 @@ public class Schedule {
 	 * Adds the time of the checkin to the correct string
 	 */
 	//Kopplas till actionhandler?
+	//Kolla förra dagens isCheckedIn? (Kräver boolean i Day)
 	public void checkIn() {
-		if(!isCheckedIn){
+		if(!weekArray[currentDay].isCheckedIn || !weekArray[getYesterday()].isCheckedIn){
 			isCheckedIn = true;
 			weekArray[currentDay].wholeDay += ("|"+cal.get(Calendar.HOUR_OF_DAY)+"."+cal.get(Calendar.MINUTE));
 		}
@@ -129,8 +129,9 @@ public class Schedule {
 	/**
 	 * Adds the time of the checkout to the correct string
 	 */
+	//Kolla förra dagens isCheckedIn? (Kräver boolean i Day)
 	public void checkOut() {
-		if(isCheckedIn){
+		if(weekArray[currentDay].isCheckedIn || weekArray[getYesterday()].isCheckedIn){ //Är fel, vill ha dagen innan, calendar.YESTERDAY?
 			isCheckedIn = false;
 			weekArray[currentDay].wholeDay += ("|"+cal.get(Calendar.HOUR_OF_DAY)+"."+cal.get(Calendar.MINUTE));
 		}
@@ -140,17 +141,14 @@ public class Schedule {
 	 * @return An int array with the times of check ins(1) and check outs(2), with the check in first and check out second. [1,2,1,2,1,2...]
 	 * Is not yett made for over night check ins
 	 */
-	public int[] getCheckInsOuts(int chosenDay){
-		
-		//checkInsOuts = weekArray[chosenDay].in;
-		return checkInsOuts;
-	}
 	
-/*
-	Week getNextWeek() {
-		return week;
+	
+	private int getYesterday(){
+		if(currentDay == 1){
+			return 7;
+		}
+		return currentDay-1;
 	}
-*/
 
 	//Skall kunna köras utan inparameter med hjälp av cal get current day och tid
 	void checkin() {

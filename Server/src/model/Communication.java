@@ -3,132 +3,149 @@
  * Each connecton to the server should initiate a new Communication object.
  *
  * @author Henrik Johansson
- * @version 2013-02-12
+ * @version 2013-02-19
  * 
  * @param port	port number for Serversocket.
  */
 
 package model;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Observable;
-import java.util.Observer;
 
-import controller.Workflow;
-
-public class Communication implements Observer {
-	private ServerSocket server;
+public class Communication extends Observable implements Runnable {
+	private Socket soc;
 	private Boolean recieveInited = false;
 	private CommRecieve recComm ;
 	
 	private InetAddress iaddr = null;
 	private String message = null;
-	private Workflow flow;
+	private FileManagement fileMan;
+	
+	//private final int CLIENT_PORT = 4445; 		//TODO remove after debug
 
-	public Communication(ServerSocket server, Workflow flow) { 
-		this.server = server;
-		this.flow = flow;
-
-		recieveInit();
-		System.out.println("Under recieve");	//TODO remove this debug
+	public Communication(Socket soc) { 
+		this.soc = soc;
+		fileMan = new FileManagement();
 
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable o, Object arg){
-		if(o instanceof CommRecieve ){
-			
-			if(arg instanceof InetAddress){
-				System.out.println("You have recieved a message from " + (InetAddress) arg );
-				iaddr = (InetAddress) arg;
-			}else if(arg instanceof String){
-				System.out.println("You recieved this message " + (String) arg);
-				message = (String) arg;
-				messageRecieved();
-			}
-			
-		}
-		
+	public void run(){
 		
 	}
 	
 	/**
 	 * Check what type of message has been recieved. For now it only check for login recieved.
 	 */
-	private void messageRecieved(){
-		if(iaddr != null && message != null){
+	public void messageRecieved(InetAddress iaddr , String message){
+		if(iaddr != null && message != null){			//Only works for login atm.
+			this.iaddr = iaddr;
+			this.message = message;
+			String[] messageType = message.split(" ");
+			//You should now have (login/schedule) (PersonalNumber) (Password) in messageType
 			
+			if(messageType[0].contains("login")){			 
+
+				loginRecieved(iaddr, message);
+			}
+			else if(messageType[0].contains("schedule")){
+				//TODO Send back schedule
+			}
 			
-			flow.loginRecieved(iaddr, message, this);
 			
 			iaddr= null;
 			message = null;
 		}
 	}
-
+	
 	/**
-	 * Send message to specific ip address and port with the message "message".
-	 * @param ipAddress	ipaddress
-	 * @param port		port nr
-	 * @param message	the message to be sent
+	 * @param iaddr		InetAddress
+	 * @param message	The message to be sent
+	 * @param comm		What communication object to use
 	 */
-	public void send(InetAddress ipAddress, int port, String message){	//Send message to ip ipAddress on port port lol :)
-				
-			try {
-				Socket sendSoc = new Socket(ipAddress, port);
-				DataOutputStream out = new DataOutputStream(sendSoc.getOutputStream() );
-				out.writeBytes(message);
-				sendSoc.close();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
+	public void loginRecieved(InetAddress iaddr, String message) { //A login has been recieved
+		String[] persNrPass = message.split(" ");
+		try{
+			String recievedPassword= persNrPass[2];				//If you send empty password server will crash without Catch
 			
-		
+			String realPassword = fileMan.getPassword(persNrPass[1]);
+			
+			if ( recievedPassword.equals(realPassword) ) { // Checks with the inlogg file to see if sent
+										// password is correct
+				
+				// Now true is to be sent back
+				String status = fileMan.getStatus(persNrPass[1]);
+				System.out.println("True is sent back due to RIGHT password, Client is:" + status); //TODO fix so you send what typ client is instead of always employeee
+				send(soc,  status);					//Sends back to port
+			}
+			else{
+				System.out.println("False is sent back due to WRONG password");
+				send(soc, "false");
+				
+				closeSocket();
+				
+			}
+		}catch(Exception e){
+			System.out.println("Did not recieve password");
 
+			System.out.println("False is sent back due to INVALID messsage recieved");
+			send(soc, "false");
+			
+			closeSocket();
+			
+			}
+		
 	}
 	
-	public void send(InetAddress ipAddress, int port, Boolean boolMessage){	//Send message to ip ipAddress on port port lol :)
+	public void send(Socket soc, Object objStringMessage){	//Send message objBoolMessage to socket soc
 		
 		try {
-			Socket sendSoc = new Socket(ipAddress, port);
-			DataOutputStream out = new DataOutputStream(sendSoc.getOutputStream() );
-			out.writeBoolean(boolMessage);
-			sendSoc.close();
+			
+			ObjectOutputStream out = new ObjectOutputStream(soc.getOutputStream() );
+			out.writeObject(objStringMessage);
+			out.flush();
+			
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Client not active, did you close clients recieveing part?");	//TODO close connection to client
+			
+			try {
+				soc.close();
+			} catch (IOException e1) {
+				System.out.println("Could not close socket");
+				e1.printStackTrace();
+			}
+			setChanged();
+			notifyObservers();
+			
 			e.printStackTrace();
 		}		
 		
 	
 
-}
-	
-	
-
-	/**
-	 * Initialise recieve part
-	 */
-	private void recieveInit() {
-		if(!recieveInited){
-			recieveInited = true;
-			CommRecieve recComm = new CommRecieve(server);
-			recComm.addObserver(this);
-			Thread recieve = new Thread( recComm );
-			recieve.start();
-		}
-		
-		
 	}
+	
+	public InetAddress getInetAddress(){
+		return iaddr;
+	}
+	
+	private void closeSocket(){
+		try {
+			soc.close();
+		} catch (IOException e1) {
+			System.out.println("Could not close socket");
+			e1.printStackTrace();
+		}
+		setChanged();
+		notifyObservers();
+	}
+	
+	
+	
+
+
 
 }
-
