@@ -27,7 +27,8 @@ public class Day {
 	Calendar cal = new GregorianCalendar();
 	Boolean isCheckedIn;
 	int startTimeH, startTimeM, endTimeH, endTimeM;
-	public String[] temp, in, checkIns, checkOuts;
+	public String[] temp, checkIns, checkOuts;
+	public String[] in = new String[100];
 	public String wholeDay;
 	public int[] checkInsOuts;
 
@@ -37,16 +38,22 @@ public class Day {
 	 */
 	public Day(String dayText) {
 		wholeDay = dayText;
-		in = dayText.split("\\|");
+		in = dayText.split("(\\.)|(\\|)");
 		isCheckedIn = false;
+		
+		for(int i=0; i<in.length; i++){ //Ska skapa en int array av in
+			
+			
+		}
 	}
 
 	/**
 	 * @return The start hour the selected day
 	 */
 	public int getStartTimeH() {
-		temp = in[1].split(".");
-		return Integer.parseInt(temp[0]);
+		return 0;
+		/*temp = in[1].split(".");
+		return Integer.parseInt(temp[0]);*/
 	}
 
 	/**
@@ -75,6 +82,7 @@ public class Day {
 
 	public int[] getCheckInsOuts(){
 		temp = Arrays.copyOfRange(in, 2, in.length);
+		//temp = temp.split(".");
 		checkInsOuts = new int[temp.length];
 		
 		//checkInsOuts = weekArray[chosenDay].in;
